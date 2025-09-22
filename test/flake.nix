@@ -6,8 +6,13 @@
 
   outputs = inputs@{ flake-utils, ... }:
     flake-utils.lib.makeOutputs inputs
-      ({ lib, pkgs, makeRustPackage, dev, ... }: {
-        default = makeRustPackage pkgs (self: rec {
+      ({ lib, pkgs, makeRustPackage, dev, ... }: rec {
+        default = pkgs.linkFarmFromDrvs "default" [
+          makeRustPackageTest
+          importPnpmLockTest
+        ];
+
+        makeRustPackageTest = makeRustPackage pkgs (self: rec {
           src = ./.;
 
           buildInputs = with pkgs; [
@@ -34,5 +39,10 @@
               --prefix PATH : ${lib.makeBinPath runtimeInputs}
           '';
         });
+
+        importPnpmLockTest = flake-utils.lib.importPnpmLock {
+          inherit lib pkgs;
+          pnpmRoot = ./.;
+        };
       });
 }
