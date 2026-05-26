@@ -28,9 +28,12 @@
                     then
                       lib.sourceByRegex args.src [
                         "^\.cargo(/.*)?$"
+                        "^benches(/.*)?$"
                         "^build\.rs$"
                         "^Cargo\.(lock|toml)$"
+                        "^examples(/.*)?$"
                         "^src(/.*)?$"
+                        "^tests(/.*)?$"
                       ]
                     else args.src;
 
